@@ -1,5 +1,6 @@
 package com.example.yami.yamiycp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -106,6 +107,9 @@ public class LoginActivity extends AppCompatActivity {
                                    Toast.makeText(LoginActivity.this,"登陆成功",Toast.LENGTH_SHORT).show();
                                }
                            });
+                           Intent intent = new Intent();
+                           intent.putExtra("data_return","SUCCESS");
+                           setResult(RESULT_OK,intent);
                            finish();
                        }else {
                            runOnUiThread(new Runnable() {

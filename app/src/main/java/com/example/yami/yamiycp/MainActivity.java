@@ -3,6 +3,7 @@ package com.example.yami.yamiycp;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
@@ -81,7 +82,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this,LoginActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent,1);
             }
         });
         if (!ApplicationUtil.getAccount(this).isEmpty()){
@@ -127,6 +128,7 @@ public class MainActivity extends AppCompatActivity
                 Element body = doc.body();
                 Elements names = body.getElementsByClass("rw_list_left_up_r_p1");
                 Elements numbers = body.getElementsByClass("rw_list_left_up_l");
+                teacherList.clear();
                 for (Element name : names){
                     Teacher teacher = new Teacher();
                     teacher.setTeacherName(name.text());
@@ -207,5 +209,18 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        switch (requestCode){
+            case 1:
+                if (resultCode == RESULT_OK){
+                    assert data != null;
+                    if (data.getStringExtra("data_return").equals("SUCCESS")){
+                        initRecyclerView();
+                    }
+                }
+        }
     }
 }
