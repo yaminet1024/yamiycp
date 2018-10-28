@@ -4,7 +4,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.yami.yamiycp"
-        minSdkVersion 28
+        minSdkVersion 26
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -29,5 +29,9 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'org.jsoup:jsoup:1.11.3'
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+    implementation 'com.github.dmytrodanylyk.android-process-button:library:1.0.0'
+    implementation 'com.android.support:cardview-v7:28.+'
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
+
 
 }

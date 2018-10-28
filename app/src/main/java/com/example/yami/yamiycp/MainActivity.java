@@ -1,9 +1,13 @@
 package com.example.yami.yamiycp;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,10 +17,37 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+
+import com.example.yami.yamiycp.Utils.ApplicationUtil;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Cookie;
+import okhttp3.CookieJar;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private static final String TAG = "MainActivity";
+    private List<Teacher> teacherList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,22 +70,86 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
         initView();
     }
 
     private void initView() {
-        ImageView imageView = findViewById(R.id.imageView);
-        imageView.setOnClickListener(new View.OnClickListener() {
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        LinearLayout linearLayout = (LinearLayout) navigationView.getHeaderView(0);
+        linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this,LoginActivity.class);
                 startActivity(intent);
             }
         });
+        if (!ApplicationUtil.getAccount(this).isEmpty()){
+            initRecyclerView();
+        }
+    }
+
+    private void initRecyclerView() {
+        final RecyclerView recyclerView = findViewById(R.id.index_list);
+        final HashMap<String,List<Cookie>> cookieStore = new HashMap<>();
+        final OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .cookieJar(new CookieJar() {
+                    @Override
+                    public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
+                        cookieStore.put(url.host(),cookies);
+                    }
+
+                    @Override
+                    public List<Cookie> loadForRequest(HttpUrl url) {
+                        List<Cookie> cookies = cookieStore.get(url.host());
+                        return cookies!=null ? cookies : new ArrayList<Cookie>();
+                    }
+                })
+                .build();
+        Request request = new Request.Builder()
+                .url("http://csnfjx.youside.cn/webphone/ajax/StuLogin.ashx?t=0.6502667345405999&loginname=" + ApplicationUtil.getAccount(this) + "&loginpwd= " + ApplicationUtil.getPassword(this) + "&log=")
+                .build();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Request teacherInfo = new Request.Builder()
+                        .url("http://csnfjx.youside.cn/webphone/ajax/TeacherList.ashx")
+                        .build();
+                Response teacherBody = okHttpClient.newCall(teacherInfo).execute();
+                assert teacherBody.body() != null;
+                Document doc = Jsoup.parse(teacherBody.body().string());
+                Element body = doc.body();
+                Elements names = body.getElementsByClass("rw_list_left_up_r_p1");
+                Elements numbers = body.getElementsByClass("rw_list_left_up_l");
+                for (Element name : names){
+                    Teacher teacher = new Teacher();
+                    teacher.setTeacherName(name.text());
+                    teacherList.add(teacher);
+                }
+                for (int i = 0;i<numbers.size();i++){
+                    teacherList.get(i).setTeacherNumber(numbers.get(i).attributes().get("onclick").substring(8,12));
+                }
+                for (Teacher teacher1 : teacherList){
+                    Log.d(TAG, "onResponse: " + teacher1.getTeacherName());
+                    Log.d(TAG, "onResponse: " + teacher1.getTeacherNumber());
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL);
+                        recyclerView.setLayoutManager(staggeredGridLayoutManager);
+                        recyclerView.setAdapter(new IndexListAdapter(teacherList));
+                    }
+                });
+            }
+        });
+
     }
 
     @Override
