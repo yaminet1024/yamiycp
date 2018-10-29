@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        getSupportActionBar().setTitle("请先登陆");
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initRecyclerView() {
+        getSupportActionBar().setTitle("数据加载中");
         final RecyclerView recyclerView = findViewById(R.id.index_list);
         final HashMap<String,List<Cookie>> cookieStore = new HashMap<>();
         final OkHttpClient okHttpClient = new OkHttpClient.Builder()
@@ -147,6 +148,7 @@ public class MainActivity extends AppCompatActivity
                         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL);
                         recyclerView.setLayoutManager(staggeredGridLayoutManager);
                         recyclerView.setAdapter(new IndexListAdapter(teacherList));
+                        getSupportActionBar().setTitle("教练预约");
                     }
                 });
             }
