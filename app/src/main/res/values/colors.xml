@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#607D8B</color>
-    <color name="colorPrimaryDark">#546E7A</color>
-    <color name="colorAccent">#9E9E9E</color>
+    <color name="colorPrimary">#ff9800</color>
+    <color name="colorPrimaryDark">#f57c00</color>
+    <color name="colorAccent">#78909C</color>
     <color name="md_blue_grey_50">#ECEFF1</color>
     <color name="md_blue_grey_100">#CFD8DC</color>
     <color name="md_blue_grey_200">#B0BBC5</color>
@@ -13,4 +13,36 @@
     <color name="md_blue_grey_700">#455A64</color>
     <color name="md_blue_grey_800">#37474F</color>
     <color name="md_blue_grey_900">#263238</color>
+
+    <color name="md_amber_50_color_code">#fff8e1</color>
+    <color name="md_amber_100_color_code">#ffecb3</color>
+    <color name="md_amber_200_color_code">#ffe082</color>
+    <color name="md_amber_300_color_code">#ffd54f</color>
+    <color name="md_amber_400_color_code">#ffca28</color>
+    <color name="md_amber_500_color_code">#ffc107</color>
+    <color name="md_amber_600_color_code">#ffb300</color>
+    <color name="md_amber_700_color_code">#ffa000</color>
+    <color name="md_amber_800_color_code">#ff8f00</color>
+    <color name="md_amber_900_color_code">#ff6f00</color>
+    <color name="md_amber_a100_color_code">#ffe57f</color>
+    <color name="md_amber_a200_color_code">#ffd740</color>
+    <color name="md_amber_a400_color_code">#ffc400</color>
+    <color name="md_amber_a700_color_code">#ffab00</color>
+
+    <!-- orange -->
+    <color name="md_orange_50_color_code">#fff3e0</color>
+    <color name="md_orange_100_color_code">#ffe0b2</color>
+    <color name="md_orange_200_color_code">#ffcc80</color>
+    <color name="md_orange_300_color_code">#ffb74d</color>
+    <color name="md_orange_400_color_code">#ffa726</color>
+    <color name="md_orange_500_color_code">#ff9800</color>
+    <color name="md_orange_600_color_code">#fb8c00</color>
+    <color name="md_orange_700_color_code">#f57c00</color>
+    <color name="md_orange_800_color_code">#ef6c00</color>
+    <color name="md_orange_900_color_code">#e65100</color>
+    <color name="md_orange_a100_color_code">#ffd180</color>
+    <color name="md_orange_a200_color_code">#ffab40</color>
+    <color name="md_orange_a400_color_code">#ff9100</color>
+    <color name="md_orange_a700_color_code">#ff6d00</color>
+
 </resources>

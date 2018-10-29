@@ -1,6 +1,8 @@
 package com.example.yami.yamiycp;
 
-public class Teacher {
+import java.io.Serializable;
+
+public class Teacher implements Serializable {
     private String teacherName;
     private String teacherNumber;
     private String teacherPhoto;

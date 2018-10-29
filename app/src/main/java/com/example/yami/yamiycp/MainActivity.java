@@ -22,13 +22,19 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.yami.yamiycp.Utils.ApplicationUtil;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,6 +55,7 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = "MainActivity";
     private List<Teacher> teacherList = new ArrayList<>();
+    private MyInfo myInfo = new MyInfo();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,15 +64,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("请先登陆");
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -83,6 +81,8 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this,LoginActivity.class);
                 startActivityForResult(intent,1);
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                drawer.closeDrawer(GravityCompat.START);
             }
         });
         if (!ApplicationUtil.getAccount(this).isEmpty()){
@@ -151,9 +151,48 @@ public class MainActivity extends AppCompatActivity
                         getSupportActionBar().setTitle("教练预约");
                     }
                 });
+                initMyInfo(okHttpClient);
             }
         });
 
+    }
+
+    private void initMyInfo(OkHttpClient okHttpClient) {
+        Request info = new Request.Builder()
+                .url("http://csnfjx.youside.cn/webphone/bmxx.aspx")
+                .build();
+        try {
+            Response response = okHttpClient.newCall(info).execute();
+            Document doc = Jsoup.parse(response.body().string());
+            Element document = doc.body();
+            Elements elements = document.getElementsByClass("xm_span_r");
+            myInfo.setName(elements.get(0).text());
+            myInfo.setReportData(elements.get(1).text());
+            myInfo.setIdCard(elements.get(2).text());
+            myInfo.setPhone(elements.get(3).text());
+            myInfo.setCarStyle(elements.get(4).text());
+            myInfo.setLearning(elements.get(5).text());
+            myInfo.setLearnProject(elements.get(6).text());
+            myInfo.setRemainProject(elements.get(7).text());
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+                    LinearLayout linearLayout = (LinearLayout) navigationView.getHeaderView(0);
+                    TextView textView = linearLayout.findViewById(R.id.user_name);
+                    TextView textView1 = linearLayout.findViewById(R.id.textView);
+                    textView.setText(myInfo.getName()+ ",您好");
+                    textView1.setText("当前的学习进度为：" + myInfo.getLearning());
+                    ImageView imageView = linearLayout.findViewById( R.id.imageView);
+                    Glide.with(MainActivity.this)
+                            .load("http://csnfjx.youside.cn/webphone/images/tx.jpg")
+                            .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                            .into(imageView);
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
