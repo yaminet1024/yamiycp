@@ -45,7 +45,7 @@ public class Date4 extends Fragment {
         }
         Calendar calendar=Calendar.getInstance();
         calendar.setTime(new Date());
-        calendar.set(Calendar.DAY_OF_MONTH,calendar.get(Calendar.DAY_OF_MONTH)+4); //让日期加2
+        calendar.set(Calendar.DAY_OF_MONTH,calendar.get(Calendar.DAY_OF_MONTH)+5); //让日期加2
         String time = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH)+1) + "-"+ calendar.get(Calendar.DATE);
         Log.d("fuck", "loadData: " + time + "  " + teacher.getTeacherNumber());
         YuyueService yuyueService = new YuyueService(getActivity(),teacher.getTeacherNumber(),time);
