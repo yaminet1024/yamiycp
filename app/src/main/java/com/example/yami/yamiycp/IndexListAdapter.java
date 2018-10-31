@@ -50,7 +50,9 @@ public class IndexListAdapter extends RecyclerView.Adapter<IndexListAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         Teacher teacher = teacherList.get(i);
-        Glide.with(context).load("http://csnfjx.youside.cn/wsyy/upload/" + teacher.getTeacherNumber() + ".jpg").apply(RequestOptions.bitmapTransform(new CenterCrop())).into(viewHolder.teacherPhoto);
+        RequestOptions requestOptions = new RequestOptions().error(R.drawable.icon).centerCrop();
+
+        Glide.with(context).load("http://csnfjx.youside.cn/wsyy/upload/" + teacher.getTeacherNumber() + ".jpg").apply(requestOptions).into(viewHolder.teacherPhoto);
         viewHolder.teacherName.setText(teacher.getTeacherName());
     }
 

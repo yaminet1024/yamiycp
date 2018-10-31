@@ -18,17 +18,20 @@ import com.example.yami.yamiycp.Fragments.Date2;
 import com.example.yami.yamiycp.Fragments.Date3;
 import com.example.yami.yamiycp.Fragments.Date4;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
 
 public class Main3Activity extends AppCompatActivity {
 
     private static final String TAG =  "Main3Activity";
 
-    Teacher selectedTeacher;
+    public Teacher selectedTeacher;
 
     ArrayList<Fragment> fragmentsList = new ArrayList<>();
 
@@ -99,12 +102,12 @@ public class Main3Activity extends AppCompatActivity {
 
             }
         });
+
+        EventBus.getDefault().postSticky(selectedTeacher);
     }
 
     private void setTabTitle() {
         String []weekdate = {"星期日","星期一","星期二","星期三","星期四","星期五","星期六"};
-
-
         Calendar calendar=Calendar.getInstance();
         calendar.setTime(new Date());
         calendar.set(Calendar.DAY_OF_MONTH,calendar.get(Calendar.DAY_OF_MONTH)+2); //让日期加1
@@ -117,4 +120,8 @@ public class Main3Activity extends AppCompatActivity {
         titleList[3] = calendar.get(Calendar.MONTH)+1  + "/" + calendar.get(Calendar.DATE) + "\n" + weekdate[calendar.get(calendar.DAY_OF_WEEK)-1];
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }
