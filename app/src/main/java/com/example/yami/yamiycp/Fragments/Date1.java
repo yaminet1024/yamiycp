@@ -49,6 +49,7 @@ public class Date1 extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        EventBus.getDefault().register(this);
         View view = inflater.inflate(R.layout.date1,container,false);
         this.view=view;
         return view;
@@ -66,16 +67,17 @@ public class Date1 extends Fragment {
         YuyueService yuyueService = new YuyueService(getActivity(),teacher.getTeacherNumber(),time);
         yuyueService.getYuyueList(new YuyueService.OnListListener() {
             @Override
-            public void onReponse(final List<String> data) {
+            public void onReponse(final List<String> data, final OkHttpClient client) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         RecyclerView recyclerView = view.findViewById(R.id.recyclerView1);
                         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(),1);
-                        DateAdapter adapter = new DateAdapter(data);
+                        DateAdapter adapter = new DateAdapter(data,client);
                         recyclerView.setLayoutManager(gridLayoutManager);
                         recyclerView.setAdapter(adapter);
                         success = true;
+                        view.findViewById(R.id.progress_1).setVisibility(View.GONE);
                     }
                 });
             }
@@ -92,7 +94,6 @@ public class Date1 extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        EventBus.getDefault().register(this);
         Log.d("EventBus", "onStart: ");
     }
 

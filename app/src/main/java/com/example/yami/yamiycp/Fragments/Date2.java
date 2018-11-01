@@ -24,6 +24,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import okhttp3.OkHttpClient;
+
 public class Date2 extends Fragment {
     View view;
     Teacher teacher;
@@ -35,6 +37,7 @@ public class Date2 extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        EventBus.getDefault().register(this);
         View view = inflater.inflate(R.layout.date2,container,false);
         this.view=view;
         return view;
@@ -52,16 +55,17 @@ public class Date2 extends Fragment {
         YuyueService yuyueService = new YuyueService(getActivity(),teacher.getTeacherNumber(),time);
         yuyueService.getYuyueList(new YuyueService.OnListListener() {
             @Override
-            public void onReponse(final List<String> data) {
+            public void onReponse(final List<String> data, final OkHttpClient client) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         RecyclerView recyclerView = view.findViewById(R.id.recyclerView2);
                         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(),1);
-                        DateAdapter adapter = new DateAdapter(data);
+                        DateAdapter adapter = new DateAdapter(data,client);
                         recyclerView.setLayoutManager(gridLayoutManager);
                         recyclerView.setAdapter(adapter);
                         success = true;
+                        view.findViewById(R.id.progress_2).setVisibility(View.GONE);
                     }
                 });
             }
@@ -78,7 +82,6 @@ public class Date2 extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        EventBus.getDefault().register(this);
         Log.d("EventBus", "onStart: ");
     }
 

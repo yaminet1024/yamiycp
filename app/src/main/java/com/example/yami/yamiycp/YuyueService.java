@@ -40,7 +40,7 @@ public class YuyueService {
     }
 
     public interface OnListListener{
-        void onReponse(List<String> data);
+        void onReponse(List<String> data,OkHttpClient client);
     }
 
     public  void getYuyueList(final OnListListener onListListener){
@@ -82,7 +82,7 @@ public class YuyueService {
                 for (Element link : elements){
                     data.add(link.text());
                 }
-                onListListener.onReponse(data);
+                onListListener.onReponse(data,okHttpClient);
             }
         });
     }

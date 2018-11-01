@@ -110,6 +110,7 @@ public class LoginActivity extends AppCompatActivity {
                            Intent intent = new Intent();
                            intent.putExtra("data_return","SUCCESS");
                            setResult(RESULT_OK,intent);
+                           ApplicationUtil.setName(LoginActivity.this,"");
                            finish();
                        }else {
                            runOnUiThread(new Runnable() {

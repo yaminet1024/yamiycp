@@ -38,6 +38,7 @@ import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -55,7 +56,6 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = "MainActivity";
     private List<Teacher> teacherList = new ArrayList<>();
-    private MyInfo myInfo = new MyInfo();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,9 +138,11 @@ public class MainActivity extends AppCompatActivity
                 for (int i = 0;i<numbers.size();i++){
                     teacherList.get(i).setTeacherNumber(numbers.get(i).attributes().get("onclick").substring(8,12));
                 }
-                for (Teacher teacher1 : teacherList){
-                    Log.d(TAG, "onResponse: " + teacher1.getTeacherName());
-                    Log.d(TAG, "onResponse: " + teacher1.getTeacherNumber());
+                for (int j=0 ;j<teacherList.size();j++){
+                    if (teacherList.get(j).getTeacherName().equals("浣伟平")){
+                        Collections.swap(teacherList,0,j);
+                        break;
+                    }
                 }
                 runOnUiThread(new Runnable() {
                     @Override
@@ -158,42 +160,58 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initMyInfo(OkHttpClient okHttpClient) {
+        if (!ApplicationUtil.getName(this).isEmpty()){
+            initDrawer();
+            return;
+        }
         Request info = new Request.Builder()
                 .url("http://csnfjx.youside.cn/webphone/bmxx.aspx")
+                .build();
+        Request info1 = new Request.Builder()
+                .url("http://csnfjx.youside.cn/webphone/grzx.aspx")
                 .build();
         try {
             Response response = okHttpClient.newCall(info).execute();
             Document doc = Jsoup.parse(response.body().string());
             Element document = doc.body();
             Elements elements = document.getElementsByClass("xm_span_r");
-            myInfo.setName(elements.get(0).text());
-            myInfo.setReportData(elements.get(1).text());
-            myInfo.setIdCard(elements.get(2).text());
-            myInfo.setPhone(elements.get(3).text());
-            myInfo.setCarStyle(elements.get(4).text());
-            myInfo.setLearning(elements.get(5).text());
-            myInfo.setLearnProject(elements.get(6).text());
-            myInfo.setRemainProject(elements.get(7).text());
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-                    LinearLayout linearLayout = (LinearLayout) navigationView.getHeaderView(0);
-                    TextView textView = linearLayout.findViewById(R.id.user_name);
-                    TextView textView1 = linearLayout.findViewById(R.id.textView);
-                    textView.setText(myInfo.getName()+ ",您好");
-                    textView1.setText("当前的学习进度为：" + myInfo.getLearning());
-                    ImageView imageView = linearLayout.findViewById( R.id.imageView);
-                    Glide.with(MainActivity.this)
-                            .load("http://csnfjx.youside.cn/webphone/images/tx.jpg")
-                            .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                            .into(imageView);
-                }
-            });
+            ApplicationUtil.setName(this,elements.get(0).text());
+            ApplicationUtil.setReportData(this,elements.get(1).text());
+            ApplicationUtil.setIdCard(this,elements.get(2).text());
+            ApplicationUtil.setPhone(this,elements.get(3).text());
+            ApplicationUtil.setCarStyle(this,elements.get(4).text());
+            ApplicationUtil.setLearnProject(this,elements.get(6).text());
+            ApplicationUtil.setRemainProject(this,elements.get(7).text());
+            response = okHttpClient.newCall(info1).execute();
+            doc = Jsoup.parse(response.body().string());
+            document = doc.body();
+            elements = document.getElementsByClass("xs_span3_p1");
+            ApplicationUtil.setLearning(this,elements.text());
+            initDrawer();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    private void initDrawer() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+                LinearLayout linearLayout = (LinearLayout) navigationView.getHeaderView(0);
+                TextView textView = linearLayout.findViewById(R.id.user_name);
+                TextView textView1 = linearLayout.findViewById(R.id.textView);
+                textView.setText(ApplicationUtil.getName(MainActivity.this)+ ",您好");
+                textView1.setText("当前的学习进度为：" + ApplicationUtil.getLearning(MainActivity.this));
+                ImageView imageView = linearLayout.findViewById( R.id.imageView);
+                Glide.with(MainActivity.this)
+                        .load("http://csnfjx.youside.cn/webphone/images/tx.jpg")
+                        .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                        .into(imageView);
+            }
+        });
+    }
+
 
     @Override
     public void onBackPressed() {
