@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.yami.yamiycp.R;
+import com.example.yami.yamiycp.Teacher;
 import com.example.yami.yamiycp.Utils.ApplicationUtil;
 
 import java.util.List;
@@ -28,15 +29,17 @@ import okhttp3.Request;
 public class DateAdapter extends RecyclerView.Adapter<DateAdapter.ViewHolder> {
 
     private List<String> dataList;
-    Context context;
-    OkHttpClient client;
+    private Context context;
+    private OkHttpClient client;
+    private Teacher selectTeacher;
 
     private String[] realTime = {"08:00-09:00","09:00-10:00","10:00-11:00","11:00-12:00","13:30-14:30","14:30-15:30","15:30-16:30","16:30-17:30"};
     private String[] style = {"A","B","C","D","E","1","2","3"};
 
-    public DateAdapter(List<String> data,OkHttpClient client){
+    public DateAdapter(List<String> data,OkHttpClient client,Teacher selectTeacher){
         this.dataList = data;
         this.client = client;
+        this.selectTeacher = selectTeacher;
     }
 
     @NonNull

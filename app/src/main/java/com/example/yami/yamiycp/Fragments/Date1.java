@@ -73,7 +73,7 @@ public class Date1 extends Fragment {
                     public void run() {
                         RecyclerView recyclerView = view.findViewById(R.id.recyclerView1);
                         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(),1);
-                        DateAdapter adapter = new DateAdapter(data,client);
+                        DateAdapter adapter = new DateAdapter(data,client,teacher);
                         recyclerView.setLayoutManager(gridLayoutManager);
                         recyclerView.setAdapter(adapter);
                         success = true;
