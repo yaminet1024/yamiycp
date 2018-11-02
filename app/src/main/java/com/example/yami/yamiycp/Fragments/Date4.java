@@ -4,12 +4,15 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.yami.yamiycp.Adapters.DateAdapter;
 import com.example.yami.yamiycp.R;
@@ -38,6 +41,17 @@ public class Date4 extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         EventBus.getDefault().register(this);
         View view = inflater.inflate(R.layout.date4,container,false);
+        final SwipeRefreshLayout swipeRefreshLayout  = view.findViewById(R.id.refresh4);
+        swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(getActivity(),R.color.colorPrimary));
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                success = false;
+                loadData();
+                swipeRefreshLayout.setRefreshing(false);
+                Toast.makeText(getActivity(),"刷新成功",Toast.LENGTH_SHORT).show();
+            }
+        });
         this.view=view;
         return view;
     }
@@ -48,8 +62,12 @@ public class Date4 extends Fragment {
         }
         Calendar calendar=Calendar.getInstance();
         calendar.setTime(new Date());
-        calendar.set(Calendar.DAY_OF_MONTH,calendar.get(Calendar.DAY_OF_MONTH)+5); //让日期加2
-        String time = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH)+1) + "-"+ calendar.get(Calendar.DATE);
+        int increaseTime = 4;
+        if (calendar.get(Calendar.HOUR_OF_DAY) >= 21){
+            increaseTime = 5;
+        }
+        calendar.set(Calendar.DAY_OF_MONTH,calendar.get(Calendar.DAY_OF_MONTH)+increaseTime); //让日期加2
+        final String time = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH)+1) + "-"+ String.format("%02d",calendar.get(Calendar.DATE));
         Log.d("fuck", "loadData: " + time + "  " + teacher.getTeacherNumber());
         YuyueService yuyueService = new YuyueService(getActivity(),teacher.getTeacherNumber(),time);
         yuyueService.getYuyueList(new YuyueService.OnListListener() {
@@ -60,7 +78,7 @@ public class Date4 extends Fragment {
                     public void run() {
                         RecyclerView recyclerView = view.findViewById(R.id.recyclerView4);
                         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(),1);
-                        DateAdapter adapter = new DateAdapter(data,client,teacher);
+                        DateAdapter adapter = new DateAdapter(data,client,teacher,time);
                         recyclerView.setLayoutManager(gridLayoutManager);
                         recyclerView.setAdapter(adapter);
                         success = true;
@@ -73,6 +91,7 @@ public class Date4 extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     public void onMessageEvent(Teacher teacher) {
+        EventBus.getDefault().unregister(this);
         this.teacher = teacher;
         isPrepared = true;
         loadData();
@@ -87,7 +106,6 @@ public class Date4 extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        EventBus.getDefault().unregister(this);
         Log.d("EventBus", "onDestroy: ");
     }
 

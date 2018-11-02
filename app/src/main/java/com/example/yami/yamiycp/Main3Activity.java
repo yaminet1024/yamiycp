@@ -110,7 +110,12 @@ public class Main3Activity extends AppCompatActivity {
         String []weekdate = {"星期日","星期一","星期二","星期三","星期四","星期五","星期六"};
         Calendar calendar=Calendar.getInstance();
         calendar.setTime(new Date());
-        calendar.set(Calendar.DAY_OF_MONTH,calendar.get(Calendar.DAY_OF_MONTH)+2); //让日期加1
+        int increaseTime = 1;
+        Log.d(TAG, "setTabTitle: " + calendar.get(Calendar.HOUR_OF_DAY));
+        if (calendar.get(Calendar.HOUR_OF_DAY) >= 21){
+            increaseTime = 2;
+        }
+        calendar.set(Calendar.DAY_OF_MONTH,calendar.get(Calendar.DAY_OF_MONTH)+increaseTime); //让日期加1
         titleList[0] = calendar.get(Calendar.MONTH)+1  + "/" + calendar.get(Calendar.DATE) + "\n" + weekdate[calendar.get(calendar.DAY_OF_WEEK)-1];
         calendar.set(Calendar.DAY_OF_MONTH,calendar.get(Calendar.DAY_OF_MONTH)+1); //让日期加1
         titleList[1] = calendar.get(Calendar.MONTH)+1  + "/" + calendar.get(Calendar.DATE) + "\n" + weekdate[calendar.get(calendar.DAY_OF_WEEK)-1];
