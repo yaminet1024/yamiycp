@@ -1,10 +1,16 @@
 package com.example.yami.yamiycp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -27,8 +33,12 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -66,7 +76,58 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void checkUpdate() {
-        OkHttpClient client = new OkHttpClient();
+        final OkHttpClient client = new OkHttpClient();
+        final Request request = new Request.Builder()
+                .url("http://193.112.120.245/static/yamiycp/update.xml")
+                .build();
+        PackageManager manager = this.getPackageManager();
+        PackageInfo info = null;
+        try {
+            info = manager.getPackageInfo(this.getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        assert info != null;
+        final Float version = Float.valueOf(info.versionName);
+
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    final List<UpdateMessage> updateMessageList = parseXMLWithPull(client.newCall(request).execute().body().string());
+                    Log.d(TAG, "run: " + updateMessageList.get(0).getVersion() + "  new" + version);
+                    if (Float.valueOf(updateMessageList.get(0).getVersion()) > version ){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                builder.setTitle("有新版本可用，是否下载？");
+                                builder.setMessage(updateMessageList.get(1).getMessage());
+                                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        Uri uri = Uri.parse(updateMessageList.get(2).getMessage());
+                                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                        startActivity(intent);
+                                    }
+                                });
+                                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                                    }
+                                });
+                                builder.show();
+
+                            }
+                        });
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
 
     }
 
@@ -281,6 +342,56 @@ public class MainActivity extends AppCompatActivity
                         initRecyclerView();
                     }
                 }
+        }
+    }
+
+    private List<UpdateMessage> parseXMLWithPull(String responseData) {
+        List<UpdateMessage> updateMessages = new ArrayList<>();
+        try{
+            XmlPullParserFactory factory =  XmlPullParserFactory.newInstance();
+            XmlPullParser xmlPullParser = factory.newPullParser();
+            xmlPullParser.setInput(new StringReader(responseData));
+            int eventType = xmlPullParser.getEventType();
+            String id = "";
+            String name = "";
+            String version = "";
+            String message = "";
+            while (eventType != XmlPullParser.END_DOCUMENT){
+                String nodeName = xmlPullParser.getName();
+                switch (eventType){
+                    case XmlPullParser.START_TAG :
+                        if ("id".equals(nodeName)){
+                            id = xmlPullParser.nextText();
+                        }else if ("name".equals(nodeName)){
+                            name = xmlPullParser.nextText();
+                        }else if ("version".equals(nodeName)){
+                            version = xmlPullParser.nextText();
+                        }else if ("message".equals(nodeName)){
+                            message = xmlPullParser.nextText();
+                        }
+                        break;
+                    case XmlPullParser.END_TAG:
+                        if ("app".equals(nodeName)){
+                            UpdateMessage updateMessage = new UpdateMessage();
+                            updateMessage.setId(id);
+                            updateMessage.setName(name);
+                            updateMessage.setMessage(message);
+                            updateMessage.setVersion(version);
+                            updateMessages.add(updateMessage);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                eventType = xmlPullParser.next();
+            }
+            return updateMessages;
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            return updateMessages;
         }
     }
 }

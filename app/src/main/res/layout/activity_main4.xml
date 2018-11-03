@@ -29,7 +29,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:singleLine="true"
-                    android:text="已预约"
+                    android:text="预约中"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp" />
 
