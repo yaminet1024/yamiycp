@@ -1,11 +1,9 @@
-package com.example.yami.yamiycp;
+package com.example.yami.yamiycp.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +11,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.yami.yamiycp.Activity.OrderActivity;
+import com.example.yami.yamiycp.R;
+import com.example.yami.yamiycp.model.Teacher;
 
 import java.util.List;
 
@@ -39,7 +39,7 @@ public class IndexListAdapter extends RecyclerView.Adapter<IndexListAdapter.View
             @Override
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
-                Intent intent = new Intent(context,Main3Activity.class);
+                Intent intent = new Intent(context,OrderActivity.class);
                 intent.putExtra("teacher_data",teacherList.get(position));
                 context.startActivity(intent);
             }

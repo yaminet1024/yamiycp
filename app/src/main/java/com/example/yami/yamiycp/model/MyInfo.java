@@ -1,4 +1,4 @@
-package com.example.yami.yamiycp;
+package com.example.yami.yamiycp.model;
 
 import java.io.Serializable;
 

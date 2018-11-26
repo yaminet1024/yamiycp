@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     private ArrayList<Fragment> fragmentArrayList;
+    //存放tabItem的标题
     String[] titleList;
 
 

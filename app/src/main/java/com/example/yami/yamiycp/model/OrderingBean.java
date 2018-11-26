@@ -1,9 +1,18 @@
-package com.example.yami.yamiycp;
+package com.example.yami.yamiycp.model;
 
 public class OrderingBean {
     private String title;
     private String orderDate;
     private String orderTime;
+    private String learning;
+
+    public String getLearning() {
+        return learning;
+    }
+
+    public void setLearning(String learning) {
+        this.learning = learning;
+    }
 
     public String getTitle() {
         return title;

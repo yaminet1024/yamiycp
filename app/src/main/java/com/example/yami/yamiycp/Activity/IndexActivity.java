@@ -1,4 +1,4 @@
-package com.example.yami.yamiycp;
+package com.example.yami.yamiycp.Activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -27,7 +27,12 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.yami.yamiycp.Adapters.IndexListAdapter;
+import com.example.yami.yamiycp.R;
+import com.example.yami.yamiycp.model.Teacher;
+import com.example.yami.yamiycp.model.UpdateMessage;
 import com.example.yami.yamiycp.Utils.ApplicationUtil;
+import com.example.yami.yamiycp.view.LoginActivity;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -53,10 +58,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class MainActivity extends AppCompatActivity
+public class IndexActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "IndexActivity";
     private List<Teacher> teacherList = new ArrayList<>();
 
     @Override
@@ -101,9 +106,9 @@ public class MainActivity extends AppCompatActivity
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                AlertDialog.Builder builder = new AlertDialog.Builder(IndexActivity.this);
                                 builder.setTitle("有新版本可用，是否下载？");
-                                builder.setMessage(updateMessageList.get(1).getMessage());
+                                builder.setMessage(updateMessageList.get(1).getMessage().replaceAll("@","\n"));
                                 builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -119,7 +124,6 @@ public class MainActivity extends AppCompatActivity
                                     }
                                 });
                                 builder.show();
-
                             }
                         });
                     }
@@ -138,7 +142,7 @@ public class MainActivity extends AppCompatActivity
         linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+                Intent intent = new Intent(IndexActivity.this,LoginActivity.class);
                 startActivityForResult(intent,1);
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
                 drawer.closeDrawer(GravityCompat.START);
@@ -260,10 +264,10 @@ public class MainActivity extends AppCompatActivity
                 LinearLayout linearLayout = (LinearLayout) navigationView.getHeaderView(0);
                 TextView textView = linearLayout.findViewById(R.id.user_name);
                 TextView textView1 = linearLayout.findViewById(R.id.textView);
-                textView.setText(ApplicationUtil.getName(MainActivity.this)+ ",您好");
-                textView1.setText("当前的学习进度为：" + ApplicationUtil.getLearning(MainActivity.this));
+                textView.setText(ApplicationUtil.getName(IndexActivity.this)+ ",您好");
+                textView1.setText("当前的学习进度为：" + ApplicationUtil.getLearning(IndexActivity.this));
                 ImageView imageView = linearLayout.findViewById( R.id.imageView);
-                Glide.with(MainActivity.this)
+                Glide.with(IndexActivity.this)
                         .load("http://csnfjx.youside.cn/webphone/images/tx.jpg")
                         .apply(RequestOptions.bitmapTransform(new CircleCrop()))
                         .into(imageView);
@@ -312,21 +316,34 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_camera) {
             if (!ApplicationUtil.getAccount(this).isEmpty()){
-                Intent intent = new Intent(MainActivity.this,Main4Activity.class);
+                Intent intent = new Intent(IndexActivity.this,RecodeActivity.class);
                 startActivity(intent);
             }
         } else if (id == R.id.nav_gallery) {
+            if (!ApplicationUtil.getAccount(this).isEmpty()){
+                Intent intent = new Intent(IndexActivity.this,Trained.class);
+                intent.putExtra("style",2);
+                startActivity(intent);
+            }
 
         } else if (id == R.id.nav_slideshow) {
+            if (!ApplicationUtil.getAccount(this).isEmpty()){
+                Intent intent = new Intent(IndexActivity.this,Trained.class);
+                intent.putExtra("style",3);
+                startActivity(intent);
+            }
 
         } else if (id == R.id.nav_manage) {
+            if (!ApplicationUtil.getAccount(this).isEmpty()){
+                Intent intent = new Intent(IndexActivity.this,ERCodeActivity.class);
+                startActivity(intent);
+            }
 
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
-
+            checkUpdate();
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

@@ -1,15 +1,12 @@
-package com.example.yami.yamiycp;
+package com.example.yami.yamiycp.Activity;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.View;
 
 import com.example.yami.yamiycp.Adapters.ViewPagerAdapter;
@@ -17,19 +14,18 @@ import com.example.yami.yamiycp.Fragments.Date1;
 import com.example.yami.yamiycp.Fragments.Date2;
 import com.example.yami.yamiycp.Fragments.Date3;
 import com.example.yami.yamiycp.Fragments.Date4;
+import com.example.yami.yamiycp.R;
+import com.example.yami.yamiycp.model.Teacher;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Timer;
 
-public class Main3Activity extends AppCompatActivity {
+public class OrderActivity extends AppCompatActivity {
 
-    private static final String TAG =  "Main3Activity";
+    private static final String TAG =  "OrderActivity";
 
     public Teacher selectedTeacher;
 

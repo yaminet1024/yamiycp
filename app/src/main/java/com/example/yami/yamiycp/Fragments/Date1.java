@@ -16,31 +16,18 @@ import android.widget.Toast;
 
 import com.example.yami.yamiycp.Adapters.DateAdapter;
 import com.example.yami.yamiycp.R;
-import com.example.yami.yamiycp.Teacher;
-import com.example.yami.yamiycp.Utils.ApplicationUtil;
-import com.example.yami.yamiycp.YuyueService;
+import com.example.yami.yamiycp.model.Teacher;
+import com.example.yami.yamiycp.Service.YuyueService;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Cookie;
-import okhttp3.CookieJar;
-import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class Date1 extends Fragment {
     View view;

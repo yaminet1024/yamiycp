@@ -45,4 +45,6 @@
     <color name="md_orange_a400_color_code">#ff9100</color>
     <color name="md_orange_a700_color_code">#ff6d00</color>
 
+    <color name="transparent">#00000000</color>
+
 </resources>

@@ -3,9 +3,7 @@ package com.example.yami.yamiycp.Adapters;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
@@ -14,12 +12,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.yami.yamiycp.R;
-import com.example.yami.yamiycp.Teacher;
+import com.example.yami.yamiycp.model.Teacher;
 import com.example.yami.yamiycp.Utils.ApplicationUtil;
 
 import java.io.IOException;

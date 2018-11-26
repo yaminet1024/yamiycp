@@ -1,4 +1,4 @@
-package com.example.yami.yamiycp;
+package com.example.yami.yamiycp.model;
 
 public class UpdateMessage {
     private String id ;

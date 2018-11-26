@@ -1,4 +1,4 @@
-package com.example.yami.yamiycp;
+package com.example.yami.yamiycp.Activity;
 
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.yami.yamiycp.Adapters.OrderingAdapter;
+import com.example.yami.yamiycp.model.OrderingBean;
+import com.example.yami.yamiycp.R;
 import com.example.yami.yamiycp.Utils.ApplicationUtil;
 
 import org.jsoup.Jsoup;
@@ -32,7 +34,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class Main4Activity extends AppCompatActivity {
+public class RecodeActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
 
@@ -53,7 +55,7 @@ public class Main4Activity extends AppCompatActivity {
             public void onRefresh() {
                 initUI();
                 swipeRefreshLayout.setRefreshing(false);
-                Toast.makeText(Main4Activity.this,"刷新成功",Toast.LENGTH_SHORT).show();
+                Toast.makeText(RecodeActivity.this,"刷新成功",Toast.LENGTH_SHORT).show();
             }
         });
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -100,11 +102,15 @@ public class Main4Activity extends AppCompatActivity {
                 Elements elements1 = body.getElementsByClass("pj_con_ul_d1_p1");
                 Elements elements2 = body.getElementsByClass("pj_con_ul_d2_sp1");
                 Elements elements3 = body.getElementsByClass("pj_con_ul_d2_sp2");
+                Elements learing = body.getElementsByClass("pj_con_ul_d2_p2_sp1");
                 final List<OrderingBean> orderingBeans = new ArrayList<OrderingBean>();
                 for(Element link:elements1){
                     OrderingBean orderingBean = new OrderingBean();
                     orderingBean.setTitle(link.text());
                     orderingBeans.add(orderingBean);
+                }
+                for (int i = 0;i<orderingBeans.size();i++){
+                    orderingBeans.get(i).setLearning(learing.get(i).text());
                 }
                 for (int i = 0;i<orderingBeans.size();i++){
                     orderingBeans.get(i).setOrderDate(elements2.get(i).text());
@@ -117,7 +123,7 @@ public class Main4Activity extends AppCompatActivity {
                     public void run() {
                         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL);
                         recyclerView.setLayoutManager(staggeredGridLayoutManager);
-                        recyclerView.setAdapter(new OrderingAdapter(orderingBeans));
+                        recyclerView.setAdapter(new OrderingAdapter(orderingBeans,1));
                     }
                 });
             }

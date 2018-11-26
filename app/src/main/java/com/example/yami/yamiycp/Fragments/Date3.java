@@ -16,8 +16,8 @@ import android.widget.Toast;
 
 import com.example.yami.yamiycp.Adapters.DateAdapter;
 import com.example.yami.yamiycp.R;
-import com.example.yami.yamiycp.Teacher;
-import com.example.yami.yamiycp.YuyueService;
+import com.example.yami.yamiycp.model.Teacher;
+import com.example.yami.yamiycp.Service.YuyueService;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
